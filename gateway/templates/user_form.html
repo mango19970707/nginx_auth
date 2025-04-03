@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ if .User.ID }}编辑用户{{ else }}添加用户{{ end }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .password-note {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h3 class="card-title mb-0">
+                            {{ if .User.ID }}编辑用户{{ else }}添加用户{{ end }}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {{ if .Error }}
+                        <div class="alert alert-danger" role="alert">
+                            {{ .Error }}
+                        </div>
+                        {{ end }}
+
+                        <form method="POST" action="{{ if .User.ID }}/manage/edit/{{ .User.Username }}{{ else }}/manage/add{{ end }}">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">用户名</label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       value="{{ .User.Username }}" {{ if .User.ID }}readonly{{ end }} required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">密码</label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       {{ if not .User.ID }}required{{ end }}>
+                                {{ if .User.ID }}
+                                <div class="password-note">留空则保持当前密码不变</div>
+                                {{ end }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="permission" class="form-label">权限级别</label>
+                                <select class="form-select" id="permission" name="permission" required>
+                                    <option value="1" {{ if eq .User.Permission 1 }}selected{{ end }}>普通用户</option>
+                                    <option value="2" {{ if eq .User.Permission 2 }}selected{{ end }}>管理员</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> 保存
+                                </button>
+                                <a href="/manage/list" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> 返回
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // 客户端密码哈希处理
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const passwordInput = document.getElementById('password');
+            const originalPassword = passwordInput.value;
+            
+            // 只有当密码不为空时才进行哈希处理
+            if (originalPassword.length > 0) {
+                // 使用 CryptoJS 进行 SHA-256 哈希
+                const hash = CryptoJS.SHA256(originalPassword);
+                // 转换为 Base64
+                const hashBase64 = hash.toString(CryptoJS.enc.Base64);
+                
+                // 设置哈希后的密码
+                passwordInput.value = hashBase64;
+            }
+            
+            // 提交表单
+            this.submit();
+        });
+    </script>
+</body>
+</html> 
