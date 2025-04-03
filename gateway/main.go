@@ -3,11 +3,13 @@ package main
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"github.com/coocood/freecache"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/coocood/freecache"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,18 +27,18 @@ var cache = freecache.NewCache(cacheSize)
 func authRequired(c *gin.Context) {
 	userCookie, err := c.Cookie("user")
 	if userCookie == "" || err != nil {
-		c.Redirect(http.StatusFound, "/login")
+		c.HTML(http.StatusUnauthorized, "login.html", nil)
 		c.Abort()
 		return
 	}
 	token, err := cache.Get([]byte(userCookie))
 	if err != nil {
-		c.Redirect(http.StatusFound, "/login")
+		c.HTML(http.StatusUnauthorized, "login.html", nil)
 		c.Abort()
 		return
 	} else {
 		if tokenCookie, err := c.Cookie("sw-auth-token"); err != nil || string(token) != tokenCookie {
-			c.Redirect(http.StatusFound, "/login")
+			c.HTML(http.StatusUnauthorized, "login.html", nil)
 			c.Abort()
 			return
 		}
@@ -50,7 +52,7 @@ func requirePermission(level int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username, err := c.Cookie("user")
 		if username == "" || err != nil {
-			c.Redirect(http.StatusFound, "/login")
+			c.HTML(http.StatusUnauthorized, "login.html", nil)
 			c.Abort()
 			return
 		}
@@ -71,10 +73,17 @@ func main() {
 	userStore = models.NewUserStore()
 
 	// Get third-party URL from environment variable, or use default
-	thirdPartyUrl = os.Getenv("THIRD_PARTY_URL")
-	if thirdPartyUrl == "" {
-		thirdPartyUrl = "https://example.com/third-party" // Default fallback URL
+	listenPort := os.Getenv("GATEWAY_PORT")
+	if _, err := strconv.Atoi(listenPort); err != nil {
+		listenPort = "28080"
 	}
+	localHostIP := os.Getenv("LOCAL_HOST_IP")
+	if localHostIP == "" {
+		fmt.Println("LOCAL_HOST_IP can not be null.")
+		return
+	}
+	thirdPartyUrl = localHostIP + ":" + listenPort
+	fmt.Println("thirdPartyUrl: ", thirdPartyUrl)
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
@@ -96,7 +105,18 @@ func main() {
 				return
 			}
 		}
-		c.Redirect(http.StatusFound, "/dashboard")
+
+		user, exists := userStore.GetUser(userCookie)
+		if !exists {
+			c.HTML(http.StatusUnauthorized, "login.html", nil)
+			return
+		}
+
+		c.HTML(http.StatusOK, "dashboard.html", gin.H{
+			"username":      userCookie,
+			"permission":    user.Permission,
+			"thirdPartyUrl": thirdPartyUrl,
+		})
 	})
 
 	router.POST("/login", func(c *gin.Context) {
@@ -147,7 +167,7 @@ func main() {
 			c.SetCookie("user", "", -1, "/", "", false, true)
 			c.SetCookie("sw-auth-token", "", -1, "/", "", false, true)
 			cache.Del([]byte(username))
-			c.Redirect(http.StatusFound, "/login")
+			c.HTML(http.StatusUnauthorized, "login.html", nil)
 		})
 
 		// User management routes
@@ -228,7 +248,7 @@ func main() {
 		}
 	}
 
-	router.Run(":28080")
+	router.Run(":" + listenPort)
 }
 
 func GenerateRandomString() string {
