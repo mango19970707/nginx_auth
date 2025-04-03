@@ -1,0 +1,23 @@
+# Misc
+.DS_Store
+notes.md
+fixname.sh
+
+# IDEs
+**/.vscode
+**/.idea
+**/*.code-workspace
+
+# Helper Scripts
+run-docker.sh
+run-backend.sh
+requests.txt
+
+# Local Formatting
+.prettierrc
+*.tar
+*.txz
+rpk*
+
+# Local build tools installed via Taskfiles
+build
