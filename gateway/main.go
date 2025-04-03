@@ -73,16 +73,17 @@ func main() {
 	userStore = models.NewUserStore()
 
 	// Get third-party URL from environment variable, or use default
-	listenPort := os.Getenv("GATEWAY_PORT")
-	if _, err := strconv.Atoi(listenPort); err != nil {
-		listenPort = "28080"
+	port := os.Getenv("LISTEN_PORT")
+	if _, err := strconv.Atoi(port); err != nil {
+		fmt.Println("LISTEN_PORT can not be null.")
+		return
 	}
 	localHostIP := os.Getenv("LOCAL_HOST_IP")
 	if localHostIP == "" {
 		fmt.Println("LOCAL_HOST_IP can not be null.")
 		return
 	}
-	thirdPartyUrl = localHostIP + ":" + listenPort
+	thirdPartyUrl = "http://" + localHostIP + ":" + port
 	fmt.Println("thirdPartyUrl: ", thirdPartyUrl)
 
 	router := gin.Default()
@@ -248,6 +249,10 @@ func main() {
 		}
 	}
 
+	listenPort := os.Getenv("GATEWAY_PORT")
+	if _, err := strconv.Atoi(listenPort); err != nil {
+		listenPort = "28080"
+	}
 	router.Run(":" + listenPort)
 }
 
