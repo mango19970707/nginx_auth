@@ -3,9 +3,9 @@
 
 ### docker-compose配置示例
 ```azure
-  nginx:
+  nginx_auth:
     image: docker.servicewall.cn/servicewall/nginx_decryptor:latest
-    container_name: sw_nginx
+    container_name: sw_nginx_auth
     entrypoint: ["/bin/sh", "-c", "/entrypoint.sh"]
     environment:
       - LISTEN_PORT=8080 # nginx监听的端口
