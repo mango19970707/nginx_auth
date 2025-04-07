@@ -7,95 +7,191 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/bootstrap-icons.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
+        :root {
+            --primary-color: #4e73df;
+            --primary-hover: #2e59d9;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-radius: 0.35rem;
+            --box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --transition: all 0.2s ease-in-out;
         }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
         .navbar {
-            background-color: #fff;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             padding: 1rem 0;
         }
+
         .navbar-brand {
-            color: #2c3e50;
-            font-weight: 600;
+            color: var(--dark-color);
+            font-weight: 700;
             font-size: 1.25rem;
+            letter-spacing: 0.5px;
         }
+
         .user-info {
-            background-color: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
             margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
         }
-        .user-name {
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .user-role {
-            color: #6c757d;
-            font-size: 0.875rem;
-        }
-        .option-card {
-            background-color: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.2s ease-in-out;
-        }
-        .option-card:hover {
+
+        .user-info:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0.5rem 1.5rem rgba(58, 59, 69, 0.2);
         }
-        .option-card h3 {
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 1rem;
+
+        .user-name {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
         }
-        .option-card p {
-            color: #6c757d;
+
+        .user-role {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
             margin-bottom: 1.5rem;
+            height: 100%;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
         }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1.5rem rgba(58, 59, 69, 0.2);
+        }
+
+        .option-card h3 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .option-card p {
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
         .option-card a {
-            display: inline-block;
-            background-color: #4e73df;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
             text-decoration: none;
-            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
         }
+
         .option-card a:hover {
-            background-color: #2e59d9;
-            transform: translateY(-1px);
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(78, 115, 223, 0.25);
         }
+
         .option-card .disabled {
-            background-color: #e9ecef;
-            color: #6c757d;
+            background-color: var(--light-color);
+            color: var(--secondary-color);
             cursor: not-allowed;
         }
+
         .option-card .disabled:hover {
-            background-color: #e9ecef;
+            background-color: var(--light-color);
             transform: none;
+            box-shadow: none;
         }
+
         .logout-btn {
-            color: #e74a3b;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--danger-color);
             text-decoration: none;
-            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
         }
+
         .logout-btn:hover {
-            color: #d52a1a;
+            color: white;
+            background-color: var(--danger-color);
+            transform: translateY(-2px);
+        }
+
+        .icon-wrapper {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+        }
+
+        .icon-wrapper i {
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .option-card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">认证系统</a>
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock me-2"></i>
+                认证系统
+            </a>
             <div class="ms-auto">
                 <a href="/logout" class="logout-btn">
-                    <i class="bi bi-box-arrow-right"></i> 退出登录
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>退出登录</span>
                 </a>
             </div>
         </div>
@@ -106,9 +202,11 @@
             <h2 class="user-name">欢迎, {{ .username }}</h2>
             <p class="user-role">
                 {{ if eq .permission 2 }}
-                <i class="bi bi-shield-check text-primary"></i> 管理员
+                <i class="bi bi-shield-check text-primary"></i>
+                <span>管理员</span>
                 {{ else }}
-                <i class="bi bi-person text-secondary"></i> 普通用户
+                <i class="bi bi-person text-secondary"></i>
+                <span>普通用户</span>
                 {{ end }}
             </p>
         </div>
@@ -116,28 +214,49 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="option-card">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-people"></i>
+                    </div>
                     <h3>用户管理</h3>
                     <p>管理系统用户，包括添加、编辑和删除用户。</p>
                     {{ if eq .permission 2 }}
-                    <a href="/manage/list">管理用户</a>
+                    <a href="/manage/list">
+                        <i class="bi bi-arrow-right"></i>
+                        <span>管理用户</span>
+                    </a>
                     {{ else }}
-                    <a href="#" class="disabled">管理用户</a>
-                    <p><em>您需要管理员权限才能访问此功能。</em></p>
+                    <a href="#" class="disabled">
+                        <i class="bi bi-lock"></i>
+                        <span>管理用户</span>
+                    </a>
+                    <p class="mt-2"><em>您需要管理员权限才能访问此功能。</em></p>
                     {{ end }}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="option-card">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
                     <h3>KAFKA流控平台</h3>
                     <p>支持对KAFKA集群进行监控、限流、权限控制等操作。</p>
-                    <a href="{{ .consoleAddr }}" target="_blank">访问平台</a>
+                    <a href="{{ .consoleAddr }}" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        <span>访问平台</span>
+                    </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="option-card">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-key"></i>
+                    </div>
                     <h3>解密配置平台</h3>
                     <p>密钥配置、解密参数配置。</p>
-                    <a href="{{ .decryptAddr }}" target="_blank">访问平台</a>
+                    <a href="{{ .decryptAddr }}" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        <span>访问平台</span>
+                    </a>
                 </div>
             </div>
         </div>

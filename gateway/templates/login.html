@@ -7,69 +7,148 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/bootstrap-icons.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-hover: #2e59d9;
+            --text-primary: #2c3e50;
+            --text-secondary: #495057;
+            --bg-gradient-start: #f8f9fa;
+            --bg-gradient-end: #e9ecef;
+        }
+
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
         }
+
         .login-container {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             padding: 2rem;
+            margin: auto;
         }
+
         .card {
             border: none;
-            border-radius: 1rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 1.25rem;
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
         }
+
         .card-header {
             background: transparent;
             border-bottom: none;
-            padding: 1.5rem 1.5rem 0;
+            padding: 2rem 2rem 0;
         }
+
         .card-body {
-            padding: 1.5rem;
+            padding: 2rem;
         }
+
         .card-title {
-            color: #2c3e50;
+            color: var(--text-primary);
+            font-size: 1.75rem;
             font-weight: 600;
             text-align: center;
             margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
         }
+
         .form-label {
-            color: #495057;
+            color: var(--text-secondary);
             font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
         }
+
         .form-control {
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             padding: 0.75rem 1rem;
-            border: 1px solid #ced4da;
-        }
-        .form-control:focus {
-            border-color: #4e73df;
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-        }
-        .btn-primary {
-            background-color: #4e73df;
-            border-color: #4e73df;
-            padding: 0.75rem;
-            font-weight: 500;
-            border-radius: 0.5rem;
+            border: 1.5px solid #ced4da;
+            font-size: 1rem;
             transition: all 0.2s ease-in-out;
         }
-        .btn-primary:hover {
-            background-color: #2e59d9;
-            border-color: #2e59d9;
-            transform: translateY(-1px);
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.15);
         }
-        .alert {
-            border-radius: 0.5rem;
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-text {
+            border-radius: 0.75rem;
+            border: 1.5px solid #ced4da;
+            background-color: #f8f9fa;
+            color: var(--text-secondary);
+            padding: 0.75rem 1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: none;
             border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.1rem;
         }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.875rem;
+            font-weight: 500;
+            font-size: 1.05rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 0.5rem 1.5rem rgba(78, 115, 223, 0.2);
+        }
+
+        .alert {
+            border-radius: 0.75rem;
+            border: none;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
         .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #fff2f2;
+            color: #dc3545;
+            border-left: 4px solid #dc3545;
+        }
+
+        .input-group .form-control:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .input-group .input-group-text:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
         }
     </style>
 </head>
@@ -90,13 +169,14 @@
                         {{ end }}
 
                         <form method="POST" action="/login">
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="username" class="form-label">用户名</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-person"></i>
                                     </span>
-                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <input type="text" class="form-control" id="username" name="username" 
+                                           placeholder="请输入用户名" required>
                                 </div>
                             </div>
 
@@ -106,7 +186,11 @@
                                     <span class="input-group-text">
                                         <i class="bi bi-lock"></i>
                                     </span>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <input type="password" class="form-control" id="password" name="password" 
+                                           placeholder="请输入密码" required>
+                                    <button type="button" class="password-toggle" id="togglePassword">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -125,12 +209,25 @@
     <script src="/static/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/crypto-js.min.js"></script>
     <script>
+        // 密码显示/隐藏功能
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // 切换图标
+            const icon = this.querySelector('i');
+            icon.classList.toggle('bi-eye');
+            icon.classList.toggle('bi-eye-slash');
+        });
+
+        // 表单提交时加密密码
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const passwordInput = document.getElementById('password');
             const originalPassword = passwordInput.value;
-            
             const hash = CryptoJS.SHA256(originalPassword);
             const hashBase64 = hash.toString(CryptoJS.enc.Base64);
             
