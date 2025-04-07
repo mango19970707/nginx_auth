@@ -225,6 +225,28 @@
             gap: 0.5rem;
         }
         
+        .password-toggle {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-left: none;
+            border-radius: 0 0.5rem 0.5rem 0;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .input-group .form-control:not(:last-child) {
+            border-radius: 0.5rem 0 0 0.5rem;
+        }
+        
         @media (max-width: 768px) {
             .navbar {
                 padding: 1rem;
@@ -318,5 +340,21 @@
     </div>
 
     <script src="/static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+    </script>
 </body>
 </html> 
