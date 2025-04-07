@@ -18,6 +18,7 @@ requests.txt
 *.tar
 *.txz
 rpk*
+/gateway/gateway
 
 # Local build tools installed via Taskfiles
 build

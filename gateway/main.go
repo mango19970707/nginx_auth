@@ -17,7 +17,10 @@ import (
 )
 
 var userStore *models.UserStore
-var thirdPartyUrl string
+var (
+	consoleAddr string
+	decryptAddr string
+)
 
 const cacheSize = 100 * 1024 * 1024
 
@@ -83,8 +86,8 @@ func main() {
 		fmt.Println("LOCAL_HOST_IP can not be null.")
 		return
 	}
-	thirdPartyUrl = "http://" + localHostIP + ":" + port
-	fmt.Println("thirdPartyUrl: ", thirdPartyUrl)
+	consoleAddr = "http://" + localHostIP + ":" + port
+	decryptAddr = "http://" + localHostIP + ":" + port + "/decrypt"
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
@@ -114,9 +117,10 @@ func main() {
 		}
 
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
-			"username":      userCookie,
-			"permission":    user.Permission,
-			"thirdPartyUrl": thirdPartyUrl,
+			"username":    userCookie,
+			"permission":  user.Permission,
+			"consoleAddr": consoleAddr,
+			"decryptAddr": decryptAddr,
 		})
 	})
 
@@ -157,9 +161,10 @@ func main() {
 			}
 
 			c.HTML(http.StatusOK, "dashboard.html", gin.H{
-				"username":      username,
-				"permission":    user.Permission,
-				"thirdPartyUrl": thirdPartyUrl,
+				"username":    username,
+				"permission":  user.Permission,
+				"consoleAddr": consoleAddr,
+				"decryptAddr": decryptAddr,
 			})
 		})
 
