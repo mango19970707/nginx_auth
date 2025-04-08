@@ -77,13 +77,11 @@ func main() {
 
 	// Get third-party URL from environment variable, or use default
 	port := os.Getenv("LISTEN_PORT")
-	port = "8080"
 	if _, err := strconv.Atoi(port); err != nil {
 		fmt.Println("LISTEN_PORT can not be null.")
 		return
 	}
 	localHostIP := os.Getenv("LOCAL_HOST_IP")
-	localHostIP = "127.0.0.1"
 	if localHostIP == "" {
 		fmt.Println("LOCAL_HOST_IP can not be null.")
 		return
@@ -93,7 +91,7 @@ func main() {
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
-	router.Static("/static", "./static")
+	router.Static("/auth_static", "./static")
 
 	// Public routes
 	router.GET("/login", func(c *gin.Context) {
