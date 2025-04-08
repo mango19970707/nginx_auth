@@ -1,4 +1,4 @@
-DOCKER_IMAGE_NAME = docker.servicewall.cn/servicewall/nginx_decryptor:latest
+DOCKER_IMAGE_NAME = docker.servicewall.cn/servicewall/nginx_auth:latest
 GIT_HASH = $(shell git rev-parse HEAD)
 TAR_NAME_PREFIX = nginx_decryptor-$(shell date +'%Y%m')
 XZ_THREAD = 3
@@ -39,7 +39,7 @@ sync_origin: makesure_docker_builder
 gen_upgrade_tarball: clean docker_tar_amd64 docker_tar_arm64
 	@set -e; \
 		export SW_META_VERSION=1.0; \
-		export SW_SERVICE_NAME=nginx_decryptor; \
+		export SW_SERVICE_NAME=nginx_auth; \
 		export SW_DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME); \
 		export SW_META_PLATFORM=amd64; \
 		export SW_DOCKER_TAR_FILE=$(TAR_NAME_PREFIX)_$${SW_META_PLATFORM}.docker.txz; \
@@ -58,7 +58,7 @@ upgrade_tar_amd64: docker_tar_amd64
 	@set -e; \
 		export SKIP_UPLOAD=true; \
 		export SW_META_VERSION=1.0; \
-		export SW_SERVICE_NAME=nginx_decryptor; \
+		export SW_SERVICE_NAME=nginx_auth; \
 		export SW_DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME); \
 		export SW_META_PLATFORM=amd64; \
 		export SW_DOCKER_TAR_FILE=$(TAR_NAME_PREFIX)_$${SW_META_PLATFORM}.docker.txz; \
@@ -69,7 +69,7 @@ upgrade_tar_arm64: docker_tar_arm64
 	@set -e; \
 		export SKIP_UPLOAD=true; \
 		export SW_META_VERSION=1.0; \
-		export SW_SERVICE_NAME=nginx_decryptor; \
+		export SW_SERVICE_NAME=nginx_auth; \
 		export SW_DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME); \
 		export SW_META_PLATFORM=arm64; \
 		export SW_DOCKER_TAR_FILE=$(TAR_NAME_PREFIX)_$${SW_META_PLATFORM}.docker.txz; \
