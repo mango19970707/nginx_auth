@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApiPost - 发送POST请求</title>
+    <link href="/auth_static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/auth_static/css/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-hover: #2e59d9;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-radius: 0.35rem;
+            --box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            color: var(--dark-color);
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1.5rem rgba(58, 59, 69, 0.2);
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 0;
+            font-size: 1.25rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            color: var(--dark-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d3e2;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.15);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 0.5rem 1rem rgba(78, 115, 223, 0.25);
+        }
+
+        .btn-outline-secondary {
+            color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .param-row {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .param-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* 添加参数名和参数值的宽度比例控制 */
+        .param-name {
+            flex: 1;
+        }
+        
+        .param-value {
+            flex: 3;
+        }
+
+        .response-container {
+            background-color: #f8f9fc;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--info-color);
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .response-title {
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+
+        .response-status {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            color: var(--success-color);
+        }
+
+        .status-error {
+            color: var(--danger-color);
+        }
+
+        .response-body {
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--danger-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .logout-btn:hover {
+            color: white;
+            background-color: var(--danger-color);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock me-2"></i>
+                认证系统
+            </a>
+            <div class="ms-auto">
+                <a href="/dashboard" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-speedometer2 me-1"></i>
+                    <span>返回仪表盘</span>
+                </a>
+                <a href="/logout" class="logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="bi bi-send me-2"></i>
+                    ApiPost - 发送POST请求
+                </h3>
+            </div>
+            <div class="card-body">
+                <form id="apiPostForm">
+                    <div class="mb-3">
+                        <label for="requestUrl" class="form-label">请求URL</label>
+                        <input type="text" class="form-control" id="requestUrl" name="url" placeholder="请输入完整的URL，例如: https://api.example.com/endpoint" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span>请求参数</span>
+                            <button type="button" class="btn btn-sm btn-primary" id="addParamBtn">
+                                <i class="bi bi-plus-circle me-1"></i>添加参数
+                            </button>
+                        </label>
+                        <div id="paramsContainer">
+                            <!-- 参数行将在这里动态添加 -->
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i>发送请求
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="responseContainer" class="response-container" style="display: none;">
+                    <div class="response-header">
+                        <h4 class="response-title">响应结果</h4>
+                        <span id="responseStatus" class="response-status"></span>
+                    </div>
+                    <div id="responseBody" class="response-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/auth_static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addParamBtn = document.getElementById('addParamBtn');
+            const paramsContainer = document.getElementById('paramsContainer');
+            const apiPostForm = document.getElementById('apiPostForm');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseStatus = document.getElementById('responseStatus');
+            const responseBody = document.getElementById('responseBody');
+            
+            // 添加参数行
+            addParamBtn.addEventListener('click', function() {
+                const paramRow = document.createElement('div');
+                paramRow.className = 'param-row';
+                paramRow.innerHTML = `
+                    <div class="param-name">
+                        <input type="text" class="form-control" name="paramKey[]" placeholder="参数名" required>
+                    </div>
+                    <div class="param-value">
+                        <input type="text" class="form-control" name="paramValue[]" placeholder="参数值" required>
+                    </div>
+                    <div class="param-controls">
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-param">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                paramsContainer.appendChild(paramRow);
+                
+                // 添加删除参数的事件监听
+                paramRow.querySelector('.remove-param').addEventListener('click', function() {
+                    paramRow.remove();
+                });
+            });
+            
+            // 默认添加一个参数行
+            addParamBtn.click();
+            
+            // 处理表单提交
+            apiPostForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const url = document.getElementById('requestUrl').value;
+                const paramKeys = Array.from(document.getElementsByName('paramKey[]')).map(input => input.value);
+                const paramValues = Array.from(document.getElementsByName('paramValue[]')).map(input => input.value);
+                
+                // 构建请求参数
+                const formData = new FormData();
+                for (let i = 0; i < paramKeys.length; i++) {
+                    if (paramKeys[i] && paramValues[i]) {
+                        formData.append(paramKeys[i], paramValues[i]);
+                    }
+                }
+                
+                try {
+                    // 发送请求
+                    const response = await fetch('/apipost', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            url: url,
+                            params: Object.fromEntries(
+                                paramKeys.map((key, i) => [key, paramValues[i]])
+                                .filter(([key]) => key)
+                            )
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    // 显示响应
+                    const data = await response.json();
+                    responseContainer.style.display = 'block';
+                    
+                    if (response.ok) {
+                        responseStatus.textContent = `状态: ${data.status || 200} OK`;
+                        responseStatus.className = 'response-status status-success';
+                    } else {
+                        responseStatus.textContent = `状态: ${data.status || response.status} 错误`;
+                        responseStatus.className = 'response-status status-error';
+                    }
+                    
+                    responseBody.textContent = JSON.stringify(data.response || data, null, 2);
+                } catch (error) {
+                    responseContainer.style.display = 'block';
+                    responseStatus.textContent = '请求失败';
+                    responseStatus.className = 'response-status status-error';
+                    responseBody.textContent = error.message;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

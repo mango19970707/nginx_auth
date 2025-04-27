@@ -1,11 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/coocood/freecache"
@@ -151,6 +156,78 @@ func main() {
 			c.SetCookie("sw-auth-token", "", -1, "/", "", false, true)
 			cache.Del([]byte(username))
 			c.HTML(http.StatusUnauthorized, "login.html", nil)
+		})
+
+		// ApiPost 路由
+		authorized.GET("/apipost", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "apipost.html", nil)
+		})
+
+		authorized.POST("/apipost", func(c *gin.Context) {
+			var request struct {
+				URL    string            `json:"url"`
+				Params map[string]string `json:"params"`
+			}
+
+			if err := c.BindJSON(&request); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "无效的请求参数",
+				})
+				return
+			}
+			fmt.Println(request)
+
+			// 创建HTTP客户端
+			client := &http.Client{
+				Timeout: 10 * time.Second,
+			}
+
+			// 准备数据
+			data, err := json.Marshal(request.Params)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "无效的请求参数",
+				})
+				return
+			}
+
+			// 发送POST请求
+			resp, err := client.Post(strings.TrimSpace(request.URL), "application/json", bytes.NewReader(data))
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"error":   "请求失败",
+					"message": err.Error(),
+				})
+				return
+			}
+			defer resp.Body.Close()
+
+			// 读取响应内容
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"error":   "读取响应失败",
+					"message": err.Error(),
+				})
+				return
+			}
+
+			// 尝试解析JSON响应
+			var jsonResponse interface{}
+			if err := json.Unmarshal(body, &jsonResponse); err != nil {
+				// 如果不是JSON，返回原始响应
+				c.JSON(http.StatusOK, gin.H{
+					"status":   resp.StatusCode,
+					"response": string(body),
+				})
+				return
+			}
+
+			// 返回JSON响应
+			c.JSON(http.StatusOK, gin.H{
+				"status":   resp.StatusCode,
+				"response": jsonResponse,
+			})
 		})
 
 		// User management routes
