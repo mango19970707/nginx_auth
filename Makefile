@@ -1,6 +1,6 @@
 DOCKER_IMAGE_NAME = docker.servicewall.cn/servicewall/nginx_auth:latest
 GIT_HASH = $(shell git rev-parse HEAD)
-TAR_NAME_PREFIX = nginx_decryptor-$(shell date +'%Y%m')
+TAR_NAME_PREFIX = nginx_auth-$(shell date +'%Y%m')
 XZ_THREAD = 3
 
 all:

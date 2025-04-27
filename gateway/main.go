@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -17,10 +16,6 @@ import (
 )
 
 var userStore *models.UserStore
-var (
-	consoleAddr string
-	decryptAddr string
-)
 
 const cacheSize = 100 * 1024 * 1024
 
@@ -75,20 +70,6 @@ func main() {
 	// Initialize user store
 	userStore = models.NewUserStore()
 
-	// Get third-party URL from environment variable, or use default
-	port := os.Getenv("LISTEN_PORT")
-	if _, err := strconv.Atoi(port); err != nil {
-		fmt.Println("LISTEN_PORT can not be null.")
-		return
-	}
-	localHostIP := os.Getenv("LOCAL_HOST_IP")
-	if localHostIP == "" {
-		fmt.Println("LOCAL_HOST_IP can not be null.")
-		return
-	}
-	consoleAddr = "http://" + localHostIP + ":" + port
-	decryptAddr = "http://" + localHostIP + ":" + port + "/decrypt"
-
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/auth_static", "./static")
@@ -117,10 +98,8 @@ func main() {
 		}
 
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
-			"username":    userCookie,
-			"permission":  user.Permission,
-			"consoleAddr": consoleAddr,
-			"decryptAddr": decryptAddr,
+			"username":   userCookie,
+			"permission": user.Permission,
 		})
 	})
 
@@ -161,10 +140,8 @@ func main() {
 			}
 
 			c.HTML(http.StatusOK, "dashboard.html", gin.H{
-				"username":    username,
-				"permission":  user.Permission,
-				"consoleAddr": consoleAddr,
-				"decryptAddr": decryptAddr,
+				"username":   username,
+				"permission": user.Permission,
 			})
 		})
 
